@@ -1,0 +1,12 @@
+{
+  "name": "hashmap",
+  "version": "1.0.0",
+  "description": "project from odin-project to use hashmap",
+  "main": "hashmap.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
