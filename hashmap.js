@@ -18,25 +18,19 @@ let hashMap = () => {
   }
 
   let tryExpand = () => {
-    let bucketsLoadFactor = countEntry()/buckets.length;
+    let bucketsLoadFactor = countEntry()/capacity;
+    console.log(bucketsLoadFactor);
     if(bucketsLoadFactor < loadfactor){
       return;
     }
     capacity = capacity*2;
-    let newBucket = new Array(capacity).fill("");
-    for(let i = 0; i < buckets.length; i++){
-      if (buckets[i] != ""){
-        newBucket[i] = buckets[i];
-      }
-    }
-    buckets = newBucket
   }
 
   function countEntry (){
     let count = 0
-    for( let i=0; i < buckets.length;i++){
-      if ( buckets[i] != ""){
-        count++;
+    for( let i=0; i < capacity;i++){
+      if ( buckets[i]){
+        count += LinkedLIst(buckets[i]).size()
       }
     }
     return count;
@@ -45,23 +39,29 @@ let hashMap = () => {
   let set = (key, value) => {
     tryExpand();
     let data = {key:key, value: value};
-    bucketNum = hash(key)%capacity;
-    if(buckets[bucketNum] != ""){
-      if(buckets[bucketNum].data.key == key){
-        buckets[bucketNum].data.value = value;
+    let bucketNum = hash(key)%capacity;
+    if(buckets[bucketNum]){
+      let linkedListNum = LinkedLIst(buckets[bucketNum]).find(key);
+      if(linkedListNum){
+        data = LinkedLIst(buckets[bucketNum]).at(linkedListNum)
+        data.data.value = value;
+        return 
       }
       else{
-        buckets[bucketNum] = Node(buckets[bucketNum]);
         LinkedLIst(buckets[bucketNum]).append(data);
+        return 
       }
     }
     buckets[bucketNum] = Node(data);
+    return 
   }
+
+
   function get(key){
     let bucketNum = hash(key)%capacity;
-    
-    if(buckets[bucketNum].data.key == key){
-      return buckets[bucketNum].data.value;
+    let data = LinkedLIst(buckets[bucketNum])
+    if(data.find(key)){
+      return data.at(data.find(key)).data.value
     }
     return null
   }
@@ -97,10 +97,76 @@ let hashMap = () => {
     }
     return false
   }
-  
+  function length(){
+    length = 0;
+    for(let i = 0; i < capacity; i++){
+      if(buckets[i]){
+        length += LinkedLIst(buckets[i]).size()
+      }
+    }
+    return length
+  }
 
+  function clear(){
+    buckets = [];
+    return buckets;
+  }
+
+  function keys(){
+    let array = [];
+    for (let i = 0; i < capacity; i++){
+      if(buckets[i]){
+        let Data = buckets[i];
+        while(Data){
+          array.push(Data.data.key);
+          Data = Data.next
+        }
+      }
+    }
+    return array;
+  }
+
+  let value = () => {
+    let array = [];
+    for ( let i = 0; i < capacity; i++){
+      if(buckets[i]){
+        let Data = buckets[i]
+        while(Data){
+          array.push(Data.data.value);
+          Data = Data.next
+        }
+      }
+    }
+    return array;
+  }
+
+  let entries = () =>{
+    let array = [];
+    for ( let i = 0; i < capacity; i++){
+      if(buckets[i]){
+        let Data = buckets[i]
+        while(Data){
+          let arrayIn = []
+          arrayIn.push(Data.data.key);
+          arrayIn.push(Data.data.value);
+          array.push(arrayIn);
+          Data = Data.next
+        }
+      }
+    }
+    return array;
+  }
+
+  function loadlevel(){
+    return loadfactor*capacity
+  }
+
+  return{loadlevel, set, get, has, remove, length, clear, keys, value, entries, buckets}
 
 }
+
+export {hashMap};
+
 
 
 

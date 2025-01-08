@@ -102,13 +102,6 @@ function LinkedLIst (Head) {
     }
     return {head, NodeData, size, append, prepend, at, tail, pop, toString, find, contain}
 }
-let data = {k:1, y:3};
-let a = Node(data);
-LinkedLIst(a).append(data)
-LinkedLIst(a).append(data)
-if(a.data){
-    console.log('a')
-}
-console.log(LinkedLIst(a).tail().next);
+
 
 export{Node, LinkedLIst}
